@@ -1,0 +1,432 @@
+openapi: 3.0.3
+info:
+  title: API de Pacientes
+  version: 1.0.0
+  description: |
+    API REST sencilla en PHP + PDO para gestionar la tabla `patients`.
+
+    - Cada endpoint es un archivo independiente dentro de `api/`.
+    - Los endpoints POST aceptan el cuerpo como JSON (`application/json`)
+      o como formulario (`application/x-www-form-urlencoded` / `multipart/form-data`).
+    - Toda respuesta tiene la forma `{ "exito": bool, "mensaje": string, "datos": mixed }`.
+    - CORS habilitado para cualquier origen (`GET`, `POST`, `OPTIONS`).
+    - Llamar un endpoint con un método distinto al esperado devuelve **405**.
+
+servers:
+  - url: ./api
+    description: Mismo servidor donde se publica esta documentación
+  - url: http://localhost/apipacientes/api
+    description: Servidor local (XAMPP)
+
+tags:
+  - name: Pacientes
+    description: Operaciones CRUD sobre pacientes
+
+paths:
+  /listar.php:
+    get:
+      tags: [Pacientes]
+      summary: Listar pacientes
+      description: Devuelve todos los pacientes ordenados por `id`.
+      operationId: listarPacientes
+      responses:
+        '200':
+          description: Listado de pacientes
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Respuesta'
+                  - type: object
+                    properties:
+                      datos:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Paciente'
+              example:
+                exito: true
+                mensaje: Listado de pacientes
+                datos:
+                  - id: 2
+                    name: María Gómez
+                    age: 28
+                    gender: F
+                    diagnosis: Dolor abdominal
+                    created_at: '2025-07-08 17:15:04'
+                  - id: 3
+                    name: Carlos Sánchez
+                    age: 45
+                    gender: M
+                    diagnosis: Hipertensión
+                    created_at: '2025-07-08 17:15:04'
+        '405':
+          $ref: '#/components/responses/MetodoNoPermitido'
+        '500':
+          $ref: '#/components/responses/ErrorInterno'
+
+  /ver.php:
+    get:
+      tags: [Pacientes]
+      summary: Ver un paciente
+      description: Devuelve un paciente por su `id`.
+      operationId: verPaciente
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: Identificador del paciente (entero >= 1)
+          schema:
+            type: integer
+            minimum: 1
+          example: 3
+      responses:
+        '200':
+          description: Paciente encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaPaciente'
+              example:
+                exito: true
+                mensaje: Paciente encontrado
+                datos:
+                  id: 3
+                  name: Carlos Sánchez
+                  age: 45
+                  gender: M
+                  diagnosis: Hipertensión
+                  created_at: '2025-07-08 17:15:04'
+        '400':
+          $ref: '#/components/responses/IdInvalido'
+        '404':
+          $ref: '#/components/responses/NoEncontrado'
+        '405':
+          $ref: '#/components/responses/MetodoNoPermitido'
+        '500':
+          $ref: '#/components/responses/ErrorInterno'
+
+  /crear.php:
+    post:
+      tags: [Pacientes]
+      summary: Crear un paciente
+      description: Crea un paciente y devuelve el registro creado.
+      operationId: crearPaciente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PacienteEntrada'
+            example:
+              name: Juan Pérez
+              age: 34
+              gender: M
+              diagnosis: Gripe común
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PacienteEntrada'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PacienteEntrada'
+      responses:
+        '200':
+          description: Paciente creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaPaciente'
+              example:
+                exito: true
+                mensaje: Paciente creado
+                datos:
+                  id: 9
+                  name: Juan Pérez
+                  age: 34
+                  gender: M
+                  diagnosis: Gripe común
+                  created_at: '2025-07-08 17:53:49'
+        '400':
+          $ref: '#/components/responses/DatosInvalidos'
+        '405':
+          $ref: '#/components/responses/MetodoNoPermitido'
+        '500':
+          $ref: '#/components/responses/ErrorInterno'
+
+  /actualizar.php:
+    post:
+      tags: [Pacientes]
+      summary: Actualizar un paciente
+      description: |
+        Reemplaza todos los campos de un paciente existente (no es actualización parcial:
+        `name`, `age` y `gender` son obligatorios). Devuelve el registro actualizado.
+      operationId: actualizarPaciente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PacienteActualizar'
+            example:
+              id: 6
+              name: Juan Pérez
+              age: 35
+              gender: M
+              diagnosis: Recuperado
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PacienteActualizar'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PacienteActualizar'
+      responses:
+        '200':
+          description: Paciente actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaPaciente'
+              example:
+                exito: true
+                mensaje: Paciente actualizado
+                datos:
+                  id: 6
+                  name: Juan Pérez
+                  age: 35
+                  gender: M
+                  diagnosis: Recuperado
+                  created_at: '2025-07-08 17:53:49'
+        '400':
+          description: Id inválido o datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaError'
+              examples:
+                idInvalido:
+                  summary: Id ausente o no válido
+                  value:
+                    exito: false
+                    mensaje: Debe indicar un id valido
+                    datos: null
+                datosInvalidos:
+                  summary: Errores de validación
+                  value:
+                    exito: false
+                    mensaje: Datos invalidos
+                    datos:
+                      - El nombre es obligatorio
+                      - El genero debe ser M, F u O
+        '404':
+          $ref: '#/components/responses/NoEncontrado'
+        '405':
+          $ref: '#/components/responses/MetodoNoPermitido'
+        '500':
+          $ref: '#/components/responses/ErrorInterno'
+
+  /eliminar.php:
+    post:
+      tags: [Pacientes]
+      summary: Eliminar un paciente
+      operationId: eliminarPaciente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IdEntrada'
+            example:
+              id: 7
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/IdEntrada'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/IdEntrada'
+      responses:
+        '200':
+          description: Paciente eliminado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Respuesta'
+              example:
+                exito: true
+                mensaje: Paciente eliminado
+                datos: null
+        '400':
+          $ref: '#/components/responses/IdInvalido'
+        '404':
+          $ref: '#/components/responses/NoEncontrado'
+        '405':
+          $ref: '#/components/responses/MetodoNoPermitido'
+        '500':
+          $ref: '#/components/responses/ErrorInterno'
+
+components:
+  schemas:
+    Paciente:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 3
+        name:
+          type: string
+          maxLength: 100
+          example: Carlos Sánchez
+        age:
+          type: integer
+          minimum: 0
+          maximum: 150
+          example: 45
+        gender:
+          type: string
+          enum: [M, F, O]
+          description: M = masculino, F = femenino, O = otro
+          example: M
+        diagnosis:
+          type: string
+          nullable: true
+          example: Hipertensión
+        created_at:
+          type: string
+          nullable: true
+          description: Fecha de creación con formato `YYYY-MM-DD HH:MM:SS`
+          example: '2025-07-08 17:15:04'
+
+    PacienteEntrada:
+      type: object
+      required: [name, age, gender]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: Obligatorio. Se eliminan los espacios al inicio y al final.
+        age:
+          type: integer
+          minimum: 0
+          maximum: 150
+        gender:
+          type: string
+          enum: [M, F, O]
+          description: Se acepta en minúscula; se guarda en mayúscula.
+        diagnosis:
+          type: string
+          description: Opcional. Si llega vacío se guarda como `null`.
+
+    PacienteActualizar:
+      allOf:
+        - $ref: '#/components/schemas/IdEntrada'
+        - $ref: '#/components/schemas/PacienteEntrada'
+
+    IdEntrada:
+      type: object
+      required: [id]
+      properties:
+        id:
+          type: integer
+          minimum: 1
+
+    Respuesta:
+      type: object
+      required: [exito, mensaje, datos]
+      properties:
+        exito:
+          type: boolean
+        mensaje:
+          type: string
+        datos:
+          nullable: true
+          description: Contenido de la respuesta; depende del endpoint.
+
+    RespuestaPaciente:
+      allOf:
+        - $ref: '#/components/schemas/Respuesta'
+        - type: object
+          properties:
+            datos:
+              $ref: '#/components/schemas/Paciente'
+
+    RespuestaError:
+      allOf:
+        - $ref: '#/components/schemas/Respuesta'
+        - type: object
+          properties:
+            exito:
+              type: boolean
+              enum: [false]
+            datos:
+              type: array
+              nullable: true
+              description: Lista de errores de validación, o `null`.
+              items:
+                type: string
+
+  responses:
+    IdInvalido:
+      description: El `id` no se envió o no es un entero >= 1
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RespuestaError'
+          example:
+            exito: false
+            mensaje: Debe indicar un id valido
+            datos: null
+
+    DatosInvalidos:
+      description: Los datos del paciente no pasaron la validación
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RespuestaError'
+          example:
+            exito: false
+            mensaje: Datos invalidos
+            datos:
+              - El nombre es obligatorio
+              - La edad debe ser un numero entero entre 0 y 150
+              - El genero debe ser M, F u O
+
+    NoEncontrado:
+      description: No existe un paciente con ese `id`
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RespuestaError'
+          example:
+            exito: false
+            mensaje: Paciente no encontrado
+            datos: null
+
+    MetodoNoPermitido:
+      description: El endpoint se llamó con un método HTTP distinto al esperado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RespuestaError'
+          example:
+            exito: false
+            mensaje: Este endpoint debe llamarse por POST
+            datos: null
+
+    ErrorInterno:
+      description: Error de base de datos o de conexión
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RespuestaError'
+          examples:
+            conexion:
+              summary: Falla de conexión
+              value:
+                exito: false
+                mensaje: No se pudo conectar a la base de datos
+                datos: null
+            interno:
+              summary: Error no controlado
+              value:
+                exito: false
+                mensaje: Error interno al procesar la solicitud
+                datos: null

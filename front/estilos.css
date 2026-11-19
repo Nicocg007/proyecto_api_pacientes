@@ -1,0 +1,351 @@
+/* ==========================================================================
+   Estilos Institucionales SENA - Taller Consumir API de Pacientes
+   ========================================================================== */
+
+:root {
+  --sena-verde: #39a900;
+  --sena-verde-hover: #2f8c00;
+  --sena-oscuro: #00324D;
+  --texto-principal: #1f2a1a;
+  --texto-secundario: #555555;
+  --fondo-pagina: #f4f6f4;
+  --fondo-tarjeta: #ffffff;
+  --borde-tarjeta: #e0e5df;
+  --color-ok: #2e7d32;
+  --fondo-ok: #e8f5e9;
+  --borde-ok: #a5d6a7;
+  --color-error: #c0392b;
+  --fondo-error: #fdecea;
+  --borde-error: #f5c6cb;
+  --color-editar: #0288d1;
+  --color-editar-hover: #0277bd;
+  --color-cancelar: #6c757d;
+  --color-cancelar-hover: #5a6268;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--fondo-pagina);
+  color: var(--texto-principal);
+  line-height: 1.5;
+  padding: 24px 16px;
+}
+
+.contenedor {
+  max-width: 1060px;
+  margin: 0 auto;
+}
+
+/* ==========================================================================
+   Encabezado
+   ========================================================================== */
+.encabezado {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background-color: var(--fondo-tarjeta);
+  border-left: 6px solid var(--sena-verde);
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.logo-area .insignia-sena {
+  background: var(--sena-verde);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 1.4rem;
+  letter-spacing: 1px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.encabezado h1 {
+  font-size: 1.6rem;
+  color: var(--texto-principal);
+}
+
+.encabezado .subtitulo {
+  color: var(--texto-secundario);
+  font-size: 0.95rem;
+}
+
+/* ==========================================================================
+   Zona de Mensajes (Alertas)
+   ========================================================================== */
+#mensaje {
+  display: none;
+  padding: 12px 18px;
+  border-radius: 6px;
+  margin-bottom: 24px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  animation: fadeIn 0.3s ease;
+}
+
+#mensaje.ok {
+  display: block;
+  color: var(--color-ok);
+  background-color: var(--fondo-ok);
+  border: 1px solid var(--borde-ok);
+}
+
+#mensaje.error {
+  display: block;
+  color: var(--color-error);
+  background-color: var(--fondo-error);
+  border: 1px solid var(--borde-error);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   Tarjetas de contenido
+   ========================================================================== */
+.tarjeta {
+  background: var(--fondo-tarjeta);
+  border: 1px solid var(--borde-tarjeta);
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.tarjeta-cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #eef2ed;
+  padding-bottom: 14px;
+  margin-bottom: 20px;
+}
+
+.tarjeta-cabecera h2 {
+  font-size: 1.25rem;
+  color: var(--texto-principal);
+}
+
+.badge {
+  background: #eef7eb;
+  color: var(--sena-verde);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 12px;
+  border: 1px solid #cce8bf;
+  text-transform: uppercase;
+}
+
+.badge.edicion {
+  background: #e1f5fe;
+  color: var(--color-editar);
+  border-color: #b3e5fc;
+}
+
+/* ==========================================================================
+   Formulario
+   ========================================================================== */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.campo label {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--texto-principal);
+}
+
+.campo .requerido {
+  color: var(--color-error);
+}
+
+.campo input,
+.campo select {
+  width: 100%;
+  padding: 9px 12px;
+  font-size: 0.95rem;
+  border: 1px solid #ccd2c9;
+  border-radius: 6px;
+  background-color: #ffffff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+
+.campo input:focus,
+.campo select:focus {
+  border-color: var(--sena-verde);
+  box-shadow: 0 0 0 3px rgba(57, 169, 0, 0.15);
+}
+
+.acciones-form {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* ==========================================================================
+   Botones
+   ========================================================================== */
+button {
+  background: var(--sena-verde);
+  color: #ffffff;
+  border: 0;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.92rem;
+  font-weight: 600;
+  transition: background-color 0.2s, transform 0.1s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+button:hover {
+  background: var(--sena-verde-hover);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+.btn-principal {
+  padding: 10px 20px;
+}
+
+.btn-secundario {
+  background: #eef2ed;
+  color: var(--texto-principal);
+  border: 1px solid #ccd2c9;
+}
+
+.btn-secundario:hover {
+  background: #dfe6dc;
+}
+
+.btn-cancelar {
+  background: var(--color-cancelar);
+  padding: 10px 18px;
+}
+
+.btn-cancelar:hover {
+  background: var(--color-cancelar-hover);
+}
+
+.btn-editar {
+  background: var(--color-editar);
+  padding: 5px 10px;
+  font-size: 0.85rem;
+}
+
+.btn-editar:hover {
+  background: var(--color-editar-hover);
+}
+
+.btn-eliminar {
+  background: var(--color-error);
+  padding: 5px 10px;
+  font-size: 0.85rem;
+}
+
+.btn-eliminar:hover {
+  background: #a93226;
+}
+
+/* ==========================================================================
+   Tabla de Datos
+   ========================================================================== */
+.tabla-contenedor {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.93rem;
+}
+
+th {
+  background: var(--sena-verde);
+  color: #ffffff;
+  font-weight: 600;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+th, td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #dddddd;
+}
+
+tbody tr:hover {
+  background-color: #f9fbf8;
+}
+
+td.acciones-celda {
+  white-space: nowrap;
+}
+
+.texto-vacio {
+  text-align: center;
+  color: var(--texto-secundario);
+  padding: 24px;
+  font-style: italic;
+}
+
+/* ==========================================================================
+   Diseño Responsive
+   ========================================================================== */
+@media (max-width: 640px) {
+  body {
+    padding: 12px 8px;
+  }
+
+  .encabezado {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px;
+  }
+
+  .tarjeta {
+    padding: 16px;
+  }
+
+  .tarjeta-cabecera {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .acciones-form {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .acciones-form button {
+    width: 100%;
+  }
+}

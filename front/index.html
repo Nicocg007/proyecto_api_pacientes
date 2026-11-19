@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consumir API de Pacientes - SENA</title>
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+  <div class="contenedor">
+    <!-- Encabezado institucional -->
+    <header class="encabezado">
+      <div class="logo-area">
+        <span class="insignia-sena">SENA</span>
+      </div>
+      <div>
+        <h1>Gestión de Pacientes</h1>
+        <p class="subtitulo">Taller: Consumo de API REST con JavaScript fetch puro</p>
+      </div>
+    </header>
+
+    <!-- Zona de mensajes del sistema (éxito o validaciones) -->
+    <section aria-label="Mensajes del sistema">
+      <div id="mensaje" role="alert"></div>
+    </section>
+
+    <!-- Formulario para Crear / Editar Pacientes -->
+    <section class="tarjeta" aria-labelledby="form-titulo">
+      <div class="tarjeta-cabecera">
+        <h2 id="form-titulo">Registrar Nuevo Paciente</h2>
+        <span id="badge-modo" class="badge">Creación</span>
+      </div>
+      
+      <form id="form" novalidate>
+        <!-- Campo oculto para el ID en caso de edición -->
+        <input type="hidden" name="id" id="id">
+
+        <div class="form-grid">
+          <div class="campo">
+            <label for="name">Nombre completo <span class="requerido">*</span></label>
+            <input 
+              type="text" 
+              id="name" 
+              name="name" 
+              placeholder="Ej: Carlos Sánchez" 
+              required
+            >
+          </div>
+
+          <div class="campo">
+            <label for="age">Edad <span class="requerido">*</span></label>
+            <input 
+              type="number" 
+              id="age" 
+              name="age" 
+              min="0" 
+              max="150" 
+              placeholder="Ej: 45" 
+              required
+            >
+          </div>
+
+          <div class="campo">
+            <label for="gender">Género <span class="requerido">*</span></label>
+            <select id="gender" name="gender" required>
+              <option value="">Seleccione una opción...</option>
+              <option value="M">Masculino (M)</option>
+              <option value="F">Femenino (F)</option>
+              <option value="O">Otro (O)</option>
+            </select>
+          </div>
+
+          <div class="campo">
+            <label for="diagnosis">Diagnóstico <span class="requerido">*</span></label>
+            <input 
+              type="text" 
+              id="diagnosis" 
+              name="diagnosis" 
+              placeholder="Ej: Hipertensión" 
+              required
+            >
+          </div>
+        </div>
+
+        <div class="acciones-form">
+          <button type="submit" id="btn-guardar" class="btn-principal">Crear Paciente</button>
+          <button type="button" id="btn-cancelar" class="btn-cancelar" style="display: none;">Cancelar Edición</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Tabla con el listado de pacientes -->
+    <section class="tarjeta" aria-labelledby="tabla-titulo">
+      <div class="tarjeta-cabecera">
+        <h2 id="tabla-titulo">Listado de Pacientes</h2>
+        <button type="button" id="btn-recargar" class="btn-secundario" title="Recargar tabla">
+          ↻ Actualizar Lista
+        </button>
+      </div>
+
+      <div class="tabla-contenedor">
+        <table id="tabla">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Edad</th>
+              <th>Género</th>
+              <th>Diagnóstico</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Filas generadas dinámicamente con JavaScript usando textContent -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <!-- Lógica y consumo con fetch -->
+  <script src="app.js"></script>
+</body>
+</html>
